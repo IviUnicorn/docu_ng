@@ -28,10 +28,17 @@ abstract class DocuNgPlatform extends PlatformInterface {
   }
 
   Future<String?> adjustDocumentCorners(String base64Image) async {
-    throw UnimplementedError('adjustDocumentCorners() has not been implemented.');
+    throw UnimplementedError(
+        'adjustDocumentCorners() has not been implemented.');
   }
 
   Future<String> adjustDocumentContrast(String base64Image, double contrast) {
-    throw UnimplementedError('adjustDocumentContrast() has not been implemented.');
+    throw UnimplementedError(
+        'adjustDocumentContrast() has not been implemented.');
+  }
+
+  void copyImageToClipboard(String base64Image) async {
+    throw UnimplementedError(
+        'copyImageToClipboard() has not been implemented.');
   }
 }

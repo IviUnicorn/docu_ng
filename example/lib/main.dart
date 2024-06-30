@@ -150,6 +150,16 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Adjust Contrast',
             child: Icon(Icons.contrast),
           ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () async {
+              if (_displayImage != null) {
+                DocuNg().copyImageToClipboard(_displayImage!);
+              }
+            },
+            tooltip: 'Copy (Share)',
+            child: Icon(Icons.copy),
+          ),
         ],
       ),
     );

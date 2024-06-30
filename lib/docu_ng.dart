@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
+
 import 'docu_ng_platform_interface.dart';
 
 class DocuNg {
@@ -36,5 +38,11 @@ class DocuNg {
         .then((result) {
       return Uint8List.fromList(base64Decode(result));
     });
+  }
+
+  /// Function to copy image to clipboard (on web or windows) and share it (on android or iOS)
+  void copyImageToClipboard(Uint8List image) {
+    String base64image = base64Encode(image);
+    return DocuNgPlatform.instance.copyImageToClipboard(base64image);
   }
 }

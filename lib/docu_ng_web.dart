@@ -4,7 +4,9 @@
 // ignore: avoid_web_libraries_in_flutter
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -209,7 +211,7 @@ class DocuNgWeb extends DocuNgPlatform {
           final newMouseX = moveEvent.client.x - rect.left;
           final newMouseY = moveEvent.client.y - rect.top;
           corners[selectedCornerIndex!]['x'] = newMouseX.toInt();
-          corners[selectedCornerIndex!]['y'] = newMouseY.toInt();
+          corners[selectedCornerIndex]['y'] = newMouseY.toInt();
           drawCornersAndLines(context, corners);
         }
 
@@ -296,5 +298,18 @@ class DocuNgWeb extends DocuNgPlatform {
     });
 
     return completer.future;
+  }
+
+  @override
+  void copyImageToClipboard(String base64Image) async {
+    // Good idea, but not works, see issue https://github.com/dart-lang/sdk/issues/44816
+    // final dataTransfer = html.DataTransfer();
+    // final imageData = base64Decode(base64Image);
+
+    // dataTransfer.setData('image/png', html.Blob([imageData]).toString());
+    // await html.window.navigator.clipboard!.write(dataTransfer);
+
+    // Copies image to clipboard as base64
+    await html.window.navigator.clipboard!.writeText(base64Image);
   }
 }
