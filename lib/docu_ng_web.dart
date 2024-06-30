@@ -7,8 +7,6 @@ import 'dart:async';
 import 'dart:html' as html;
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'package:web/helpers.dart';
-import 'package:web/web.dart' as web;
 
 import 'docu_ng_platform_interface.dart';
 
@@ -274,24 +272,29 @@ class DocuNgWeb extends DocuNgPlatform {
   }
 
   @override
-  String adjustDocumentContrast(String base64Image, double contrast) {
+  Future<String> adjustDocumentContrast(String base64Image, double contrast) {
+    final completer = Completer<String>();
     final html.ImageElement imageElement = html.ImageElement()
       ..src = 'data:image/jpeg;base64,$base64Image';
 
-    final html.CanvasElement canvas = html.CanvasElement();
+    imageElement.onLoad.listen((event) {
+      final html.CanvasElement canvas = html.CanvasElement();
 
-    canvas.width = imageElement.width;
-    canvas.height = imageElement.height;
+      canvas.width = imageElement.width;
+      canvas.height = imageElement.height;
 
-    final html.CanvasRenderingContext2D context =
-        canvas.getContext('2d') as html.CanvasRenderingContext2D;
-    context.filter = "contrast($contrast%)";
+      final html.CanvasRenderingContext2D context =
+          canvas.getContext('2d') as html.CanvasRenderingContext2D;
 
+      context.filter = "contrast($contrast%)";
+      context.drawImage(imageElement, 0, 0);
 
-    // Now I plot the image bounded by corners to canvas
+      // Now I plot the image bounded by corners to canvas
 
-    final result = canvas.toDataUrl().split(',').last;
+      final result = canvas.toDataUrl().split(',').last;
+      completer.complete(result);
+    });
 
-    return result;
+    return completer.future;
   }
 }

@@ -31,7 +31,7 @@ abstract class DocuNgPlatform extends PlatformInterface {
     throw UnimplementedError('adjustDocumentCorners() has not been implemented.');
   }
 
-  String adjustDocumentContrast(String base64Image, double contrast) {
+  Future<String> adjustDocumentContrast(String base64Image, double contrast) {
     throw UnimplementedError('adjustDocumentContrast() has not been implemented.');
   }
 }

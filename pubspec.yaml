@@ -1,5 +1,5 @@
 name: docu_ng
-description: "A new Flutter plugin project."
+description: "A Flutter package for easy scanning and modifying documents from web and mobile."
 version: 0.0.1
 homepage:
 

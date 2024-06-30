@@ -30,7 +30,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Uint8List? _scannedImage;
   Uint8List? _cropImage;
   Uint8List? _displayImage;
-  double _contrast = 100;
 
   Future<void> _scanDocument() async {
     try {
@@ -60,6 +59,66 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _adjustContrast() async {
+    if (_cropImage != null) {
+      double? contrast = await showDialog<double?>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (context) {
+            double contrast = 100;
+            return StatefulBuilder(builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Set contrast'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text("Contrast: ${contrast.round()}%"),
+                      Slider(
+                        value: contrast,
+                        max: 200,
+                        label: contrast.round().toString(),
+                        onChanged: (double value) {
+                          print(value);
+                          setState(() {
+                            contrast = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Set contrast'),
+                    onPressed: () async {
+                      Navigator.of(context).pop(contrast);
+                    },
+                  ),
+                ],
+              );
+            });
+          });
+
+      if (contrast != null) {
+        try {
+          final adjustedImage =
+              await DocuNg().adjustDocumentContrast(_scannedImage!, contrast);
+          setState(() {
+            _displayImage = adjustedImage;
+          });
+        } catch (e) {
+          print("Failed to adjust document contrast: $e");
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,27 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Document Scanner Example'),
       ),
       body: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            _displayImage == null
-                ? Text('No image scanned.')
-                : Image.memory(_displayImage!),
-            _displayImage == null
-                ? SizedBox()
-                : Slider(
-                    value: _contrast,
-                    max: 200,
-                    label: _contrast.round().toString(),
-                    onChanged: (double value) {
-                      setState(() {
-                        _contrast = value;
-                        _displayImage  = DocuNg().adjustDocumentContrast(_displayImage!, _contrast);
-                      });
-                    },
-                  )
-          ])),
+        child: _displayImage == null
+            ? Text('No image scanned.')
+            : Image.memory(_displayImage!),
+      ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -101,6 +143,12 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: _adjustDocumentCorners,
             tooltip: 'Adjust Corners',
             child: Icon(Icons.crop),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _adjustContrast,
+            tooltip: 'Adjust Contrast',
+            child: Icon(Icons.contrast),
           ),
         ],
       ),
