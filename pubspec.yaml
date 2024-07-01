@@ -1,7 +1,8 @@
 name: docu_ng
 description: "A Flutter package for easy scanning and modifying documents from web and mobile."
 version: 0.0.1
-homepage:
+homepage: https://github.com/IviUnicorn/docu_ng
+repository: https://github.com/IviUnicorn/docu_ng
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
